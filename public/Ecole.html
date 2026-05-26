@@ -1,0 +1,113 @@
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css.css"> 
+</head>
+
+<body>
+  <header>
+    <a href="accueil.html" class="bouton-retour">
+      <img src="boutonRetour.png" alt="retour accueil">
+    </a>
+    <div class="timer-box">
+      <span id="compteur">--:--</span>
+    </div>
+    <h1 style="padding-top: 20px;">Les écoles</h1>
+  </header>
+
+  <h2 class="section-title">Les problèmes actuels</h2>
+
+  <div class="section-card top-card">
+
+    <button class="arrow left">
+      <img src="leftArrow.png" alt="gauche">
+    </button>
+
+    <div class="card-slider">
+      
+      <div class="slide active">
+        <img src="educationPb1.png" alt="educationProbleme1" class="icon">
+        <h3>UNE UNIQUE VOIE SCOLAIRE</h3>
+        <p>
+          L'ensemble des élèves est encouragé à suivre une 
+          formation générale alors que près d'1/3 des français a pas envie
+        </p>
+      </div>
+
+      <div class="slide">
+        <img src="educationPb1.png" alt="educationProbleme1" class="icon">
+        <h3>UNE UNIQUE VOIE SCOLAIRE</h3>
+        <p>
+          L'ensemble des élèves est encouragé à suivre une 
+          formation générale alors que près d'1/3 des français a pas envie
+        </p>
+      </div>
+
+      <div class="slide">
+        <img src="educationPb1.png" alt="educationProbleme1" class="icon">
+        <h3>UNE UNIQUE VOIE SCOLAIRE</h3>
+        <p>
+          L'ensemble des élèves est encouragé à suivre une 
+          formation générale alors que près d'1/3 des français a pas envie
+        </p>
+      </div>
+
+    </div>
+
+    <button class="arrow right">
+      <img src="rightArrow.png" alt="droite">
+    </button>
+
+    <div class="dots">
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+
+  <h2 class="section-title">Les solutions possibles</h2>
+  <div class="section-card bottom-card">
+      <button class="arrow left">
+      <img src="leftArrow.png" alt="gauche">
+    </button>
+
+    <div class="card-slider">
+      
+      <div class="slide active">
+        <h2>Les problèmes actuels</h2>
+        <p>
+          Texte numéro 1
+        </p>
+      </div>
+
+      <div class="slide">
+        <h2>Les problèmes économiques</h2>
+        <p>
+          Texte numéro 2
+        </p>
+      </div>
+
+      <div class="slide">
+        <h2>Les problèmes sociaux</h2>
+        <p>
+          Texte numéro 3
+        </p>
+      </div>
+
+    </div>
+
+    <button class="arrow right">
+      <img src="rightArrow.png" alt="droite">
+    </button>
+
+    <div class="dots">
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+
+</body>

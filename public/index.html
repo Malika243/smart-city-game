@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="css.css"> 
+  <title>Lobby</title>
+</head>
+
+<body>
+  <h1>CREATION DE L'EQUIPE</h1>
+
+  <input id="pseudo" placeholder="Pseudo">
+  <button onclick="join()">REJOINDRE</button>
+
+  <h2>JOUEURS :</h2>
+  <ul id="players"></ul>
+
+  <p>Mettre le minuteur à (min) : </p>
+  <input type="number" id="minutesInput" value="5" min="1">
+  <br>
+  <br>
+  <button onclick="startGame()" id="startBtn">START</button>
+    
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
