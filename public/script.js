@@ -417,7 +417,7 @@ socket.on("showEndGamePopup", () => {
 
   document.body.appendChild(modal);
 
-  let countdown = 10;
+  let countdown = 5;
 
   const interval = setInterval(() => {
 
