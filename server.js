@@ -44,10 +44,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("startGame", () => {
-    if (players.length < 1) return;
-    gameStarted = true;
-    io.emit("gameStarted");
-  });
+  if (gameStarted) return;
+  if (players.length < 1) return;
+
+  gameStarted = true;
+  io.emit("gameStarted");
+});
 
   socket.emit("initBuildings", buildings);
 
@@ -62,7 +64,28 @@ io.on("connection", (socket) => {
   });
   socket.on("playerReady", () => {
         io.emit("startQuiz");
-    });
+  });
+
+  socket.on("quizFinished", () => {
+    console.log("🔥 quizFinished reçu");
+    io.emit("showEndGamePopup");
+  });
+  socket.on("endGame", () => {
+
+    console.log("🔥 reset game");
+
+    gameStarted = false;
+
+    players = [];
+
+    buildings = buildings.map(b => ({
+      ...b,
+      unlocked: false
+    }));
+
+    io.emit("updatePlayers", players);
+    io.emit("updateBuildings", buildings);
+  });
 });
 
 const PORT = process.env.PORT || 3000;

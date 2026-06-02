@@ -39,5 +39,25 @@
         <input type="submit" value="Valider">
 
     </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+    const form = document.querySelector(".quiz-form");
+
+    if (form) {
+
+    form.addEventListener("submit", (e) => {
+
+        e.preventDefault();
+
+        console.log("submit quiz déclenché");
+
+        socket.emit("quizFinished");
+
+    });
+
+    }
+    </script>
 </body>
 

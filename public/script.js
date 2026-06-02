@@ -393,3 +393,49 @@ function ouvrirPopupPret() {
 socket.on("startQuiz", () => {
     window.location.href = "quiz.html";
 });
+
+socket.on("gameReset", () => {
+  window.location.href = "index.html";
+});
+
+socket.on("showEndGamePopup", () => {
+  console.log("🔥 popup reçu");
+
+  if (document.querySelector(".end-modal")) return;
+
+  const modal = document.createElement("div");
+  modal.classList.add("modal", "end-modal");
+
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h2>Fin du jeu</h2>
+      <p id="countdownText">
+        Redirection dans 10 secondes...
+      </p>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  let countdown = 10;
+
+  const interval = setInterval(() => {
+
+    countdown--;
+
+    document.getElementById("countdownText").textContent =
+      `Redirection dans ${countdown} secondes...`;
+
+    if (countdown <= 0) {
+
+      clearInterval(interval);
+
+      // reset serveur
+      socket.emit("endGame");
+
+      // redirect
+      window.location.href = "index.html";
+    }
+
+  }, 1000);
+});
