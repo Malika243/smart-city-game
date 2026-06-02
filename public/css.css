@@ -205,8 +205,8 @@ input {
 /* BOUTON RETOUR */
 .bouton-retour {
     position: absolute;
-    top: 20px;            /* distance depuis le haut */
-    left: 20px;           /* distance depuis la gauche */
+    top: 15px;            /* distance depuis le haut */
+    left: 15px;           /* distance depuis la gauche */
     z-index: 1000;
 }
 
