@@ -386,7 +386,7 @@ header h2 {
 
     width: fit-content;
     align-self: center;
-    top: auto;
+    top: 100px;
 }
 
 .top-bar {

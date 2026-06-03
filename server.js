@@ -10,18 +10,19 @@ app.use(express.static("public"));
 let players = [];
 
 let buildings = [
-  { id: 1, name: "Gare routière", unlocked: false, enigme: "Quel est l'animal qui a le plus de dents ?",
-    answer: "escargot"},
-  { id: 2, name: "Hopital", unlocked: false, enigme: "Je suis jaune et je vole, qui suis-je ?", 
-    answer: "Azir"},
-  { id: 3, name: "Mairie", unlocked: false, enigme:"enigme", answer:"réponse"},
-  { id: 4, name: "Ecole", unlocked: false, enigme: "enigme", answer: "réponse"},
-  { id: 5, name: "Parc", unlocked: false, enigme: "enigme", answer: "réponse"},
-  { id: 6, name: "Commerces", unlocked: false, enigme: "enigme", answer: "réponse"},
-  { id: 7, name: "Zone de partage", unlocked: false, enigme: "enigme", answer: "réponse"},
-  { id: 8, name: "Complexe sportif", unlocked: false, enigme: "enigme", answer: "réponse"},
-  { id: 9, name: "Logements", unlocked: false, enigme: "enigme", answer: "réponse"}
+  { id: 1, name: "Bus and railway stations", unlocked: false, enigme: "Which vehicule does the following sound like (answer : train) ?",
+    answer: "train"},
+  { id: 2, name: "Hospital", unlocked: false, enigme: "Find the hidden disease", 
+    answer: "tuberculosis"},
+  { id: 3, name: "Town hall", unlocked: false, enigme:"Paris' most famous Anne (surname only)", answer:"hidalgo"},
+  { id: 4, name: "Schools", unlocked: false, enigme: "number of buildings * number of houses - number of railway stations", answer: "47"},
+  { id: 5, name: "Parks", unlocked: false, enigme: "Who won the Noughts and Crosses (X/O)?", answer: "O"},
+  { id: 6, name: "Shops", unlocked: false, enigme: "What is the city's main restaurant ?", answer: "pizzeria"},
+  { id: 7, name: "Sharing areas", unlocked: false, enigme: "Can you feel it ?", answer: "heart"},
+  { id: 8, name: "Sports complex", unlocked: false, enigme: "Take a look at our backs", answer: "sustainable"},
+  { id: 9, name: "Housing", unlocked: false, enigme: "Can you lift me up ?", answer: "hidden"}
 ];
+
 
 io.on("connection", (socket) => {
   socket.emit("updatePlayers", players);
@@ -41,6 +42,18 @@ io.on("connection", (socket) => {
     p => p.id !== socket.id
   );
   io.emit("updatePlayers", players);
+
+  if (gameStarted && players.length === 0) {
+
+    console.log("🔥 Plus aucun joueur -> reset complet");
+
+    gameStarted = false;
+
+    buildings = buildings.map(b => ({
+      ...b,
+      unlocked: false
+    }));
+  }
   });
 
   socket.on("startGame", () => {
