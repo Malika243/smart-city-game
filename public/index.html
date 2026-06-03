@@ -3,24 +3,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8">
   <link rel="stylesheet" href="css.css"> 
-  <title>Lobby</title>
+  <title>lobby-smart-city-game-team20</title>
 </head>
 
 <body>
-  <h1>CREATION DE L'EQUIPE</h1>
+  <div class="lobby-container">
 
-  <input id="pseudo" placeholder="Pseudo">
-  <button onclick="join()">REJOINDRE</button>
+    <h1>JOIN A TEAM</h1>
 
-  <h2>JOUEURS :</h2>
-  <ul id="players"></ul>
+    <div class="card join-card">
+       <h3>YOUR NICKNAME</h3>
 
-  <p>Mettre le minuteur à (min) : </p>
-  <input type="number" id="minutesInput" value="5" min="1">
-  <br>
-  <br>
-  <button onclick="startGame()" id="startBtn">START</button>
-    
+      <div class="join-row">
+          <input id="pseudo" placeholder="Enter your pseudo">
+          <button onclick="join()">JOIN</button>
+      </div>
+    </div>
+
+    <div class="card players-card">
+      <h3>PLAYERS :</h3>
+      <ul id="players"></ul>
+    </div>
+
+    <div class="card settings-card">
+      <h3>GAME SETTINGS</h3>
+
+      <label for="minutesInput">
+          Timer duration (minutes)
+      </label>
+
+      <input type="number" id="minutesInput" value="5" min="1">
+
+      <button onclick="startGame()" id="startBtn">
+          START
+      </button>
+    </div>
+
+  </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>

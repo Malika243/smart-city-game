@@ -1,11 +1,63 @@
-/*BASE GLOBALE*/
+/* ---------------- BASE ---------------- */
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-  margin: 0;
-  /*padding-top: 80px; /* pour le bouton retour askip*/
-  font-family: Helvetica, Arial, sans-serif;
-  background: #548c2f;
-  color: white;
-  text-align: center;
+    margin: 0;
+
+    font-family: Helvetica, Arial, sans-serif;
+
+    background: #548c2f;
+
+    color: white;
+    text-align: center;
+
+    overflow-x: hidden;
+    position: relative;
+
+    min-height: 100vh;
+}
+
+/* TEXTURE LEGERE */
+
+body::before {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+
+    background-image:
+      radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px);
+
+    background-size: 14px 14px;
+
+    pointer-events: none;
+
+    z-index: -2;
+}
+
+/* BLOB */
+
+body::after {
+    content: "";
+
+    position: fixed;
+
+    width: 350px;
+    height: 350px;
+
+    background: rgba(249,166,32,0.15);
+
+    border-radius: 50%;
+
+    filter: blur(90px);
+
+    top: -120px;
+    right: -100px;
+
+    z-index: -1;
 }
 
 /*FONTS*/
@@ -19,19 +71,22 @@ h1 {
     font-family: "BricolageGrotesque-ExtraBold", Arial, sans-serif;
     margin-top: 20px;
     padding: 0;
-    font-size: 32px;
-}
-
-h2 {
-    font-family: "BricolageGrotesque-ExtraBold", Arial, Helvetica, sans-serif;
-    margin-top: 5px;
-    font-size: 24px;
+    font-size: 42px;
+    margin-bottom: 10px;
 }
 
 h3 {
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
+    font-family: "BricolageGrotesque-ExtraBold", Arial, Helvetica, sans-serif;
+    margin-top: 5px;
     font-size: 20px;
+    margin: 0 0 10px;
+}
+
+h2 {
+    font-family: "BricolageGrotesque-ExtraBold", Arial, sans-serif; 
+    margin-top: 20px; 
+    padding: 0; 
+    font-size: 32px;
 }
 
 p, label, span {
@@ -51,6 +106,8 @@ button {
     border:#F9A620;
     border-radius: 5px;
     padding: 10px 15px;
+    width: fit-content;
+    align-self: center;
 }
 
 /*SURFACE INPUTS*/
@@ -72,6 +129,8 @@ input {
   justify-content: center;
   gap: 15px;
   padding: 20px;
+  list-style: none;
+  margin: 0;
 }
 
 .player-card {
@@ -79,7 +138,8 @@ input {
   color: white;
   padding: 15px 25px;
   border-radius: 12px;
-  min-width: 120px;
+  min-width: 70px;
+  min-height: 40px;
   text-align: center;
   font-weight: bold;
   font-size: 16px;
@@ -87,6 +147,9 @@ input {
   transition: transform 0.2s;
   animation: pop 0.25s ease-out;
   transform-origin: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 /*GRILLES BATIMENTS*/
 #grid {
@@ -103,7 +166,7 @@ input {
   font-weight: bold;
   cursor: pointer;
   transition: 0.2s;
-  height: 70px;
+  height: 80px;
   display: flex;
   box-sizing: border-box;
   justify-content: center; /* centre horizontalement */
@@ -130,10 +193,31 @@ input {
   transform: scale(0.95);
 }
 /*POUR VERSION MOBILE*/
-@media (min-width: 768px) {
-  #grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+@media (max-width: 600px) {
+
+    header h2 {
+        font-size: 22px;
+        width: 60%;
+    }
+
+    .section-card {
+        min-height: 520px;
+    }
+
+    .slide {
+        padding:
+          25px
+          36px
+          80px;
+    }
+
+    .slide p {
+        font-size: 15px;
+    }
+
+    .icon {
+        width: 90px;
+    }
 }
 
 /*ANIMATIONS*/
@@ -175,7 +259,7 @@ input {
   background: white;
   color: black;
 
-  padding: 30px;
+  padding: 24px;
 
   border-radius: 15px;
 
@@ -202,25 +286,107 @@ input {
     color: #495057;
 }
 
+/* ---------------- HEADER ---------------- */
+
+header {
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding:
+      28px
+      24px
+      12px;
+
+    min-height: 90px;
+}
+header h2 {
+    font-family: "BricolageGrotesque-ExtraBold", Arial, sans-serif;
+
+    font-size: 30px;
+
+    line-height: 1.1;
+
+    margin: 0;
+
+    width: 70%;
+}
 /* BOUTON RETOUR */
 .bouton-retour {
     position: absolute;
-    top: 15px;            /* distance depuis le haut */
-    left: 15px;           /* distance depuis la gauche */
-    z-index: 1000;
+
+    left: 20px;
+    top: 40px;
+
+    transform: translateY(-50%);
+
+    width: 48px;
+    height: 48px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.12);
+
+    backdrop-filter: blur(8px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-shadow:
+      0 4px 12px rgba(0,0,0,0.18);
+
+    transition: 0.15s ease;
+}
+
+.bouton-retour:hover {
+    transform: translateY(-50%) scale(1.05);
+}
+
+.bouton-retour:active {
+    transform: translateY(-50%) scale(0.94);
 }
 
 .bouton-retour img {
-    width: 35px;          /* taille de l'image */
+    width: 20px;
     height: auto;
-    cursor: pointer;
 }
 
 .timer-box {
-  position: absolute;
-    top: 25px;            /* distance depuis le haut */
-    right: 20px;           /* distance depuis la gauche */
-    z-index: 1000;
+    position: absolute;
+
+    right: 20px;
+    top: 40px;
+
+    transform: translateY(-50%);
+
+    background: rgba(0,0,0,0.18);
+
+    padding: 10px 14px;
+
+    border-radius: 14px;
+
+    backdrop-filter: blur(6px);
+
+    font-weight: bold;
+
+    min-width: 72px;
+
+    box-shadow:
+      0 4px 12px rgba(0,0,0,0.18);
+}
+
+.accueil-button{
+    position: absolute;
+
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: fit-content;
+    align-self: center;
+    top: auto;
 }
 
 .top-bar {
@@ -253,6 +419,7 @@ input {
     color: white;
     border-radius: 15px;
     height: 140px;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -260,13 +427,20 @@ input {
     box-sizing: border-box;
     /*font-family: "BricolageGrotesque-ExtraBold", Arial, sans-serif;
     padding: 40px 20px;*/
-    font-size: 20px;
+    font-size: 16px;
     text-align: center;
     cursor: pointer;
     transition: all 0.15s ease;
     user-select: none;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     animation: pop 0.25s ease-out;
+    overflow: hidden;
+
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+
+    flex-direction: column;
 }
 
 /* EFFET HOVER */
@@ -318,14 +492,40 @@ input {
 }
 
 /* CARTES DE CONTENU */
+.section-title {
+    font-family: "BricolageGrotesque-ExtraBold", Arial, sans-serif;
+
+    font-size: 24px;
+
+    margin:
+      28px
+      0
+      14px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
 .section-card {
-    width: 90%;
-    margin: 20px auto;
-    padding: 25px;
-    border-radius: 20px;
-    box-sizing: border-box;
-    color: black;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+
+    width: calc(100% - 32px);
+
+    max-width: 700px;
+
+    margin: 0 auto 28px;
+
+    border-radius: 28px;
+
+    background:
+      rgba(255,255,255,0.12);
+
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+      0 10px 30px rgba(0,0,0,0.18);
+
+    overflow: hidden;
 }
 
 /* CARTE HAUT */
@@ -379,7 +579,11 @@ input {
 
     overflow-y: auto;
 
-    padding: 10px 35px 60px 35px;
+    padding:
+      30px
+      50px
+      110px;
+
     box-sizing: border-box;
 
     animation: fade 0.25s ease;
@@ -394,49 +598,55 @@ input {
 /* FLECHES */
 .arrow {
     position: absolute;
+
     top: 50%;
     transform: translateY(-50%);
 
+    border: none;
     background: transparent;
 
-    border: none;
-
-    width: 45px;
-    height: 45px;
-
-    border-radius: 50%;
-
-    cursor: pointer;
-
-    z-index: 10;
+    width: 40px;
+    height: 40px;
 
     display: flex;
     justify-content: center;
     align-items: center;
 
+    cursor: pointer;
+
+    transition: 0.15s ease;
+
+    z-index: 20;
+
     padding: 0;
 }
 
-/* IMAGE */
-.arrow img {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
+.arrow:hover {
+    transform: translateY(-50%) scale(1.06);
+}
+
+.arrow:active {
+    transform: translateY(-50%) scale(0.92);
 }
 
 .arrow.left {
-    left: 10px;
+    left: 12px;
 }
 
 .arrow.right {
-    right: 10px;
+    right: 12px;
+}
+
+.arrow img {
+    width: 18px;
+    filter: brightness(0) invert(1);
 }
 
 /* DOTS */
 .dots {
     position: absolute;
 
-    bottom: 15px;
+    bottom: 22px;
     left: 50%;
 
     transform: translateX(-50%);
@@ -445,22 +655,21 @@ input {
     gap: 10px;
 }
 
-/* POINTS */
 .dot {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
 
     border-radius: 50%;
 
-    background: rgba(0,0,0,0.25);
+    background: rgba(255,255,255,0.3);
 
-    transition: 0.2s;
+    transition: 0.2s ease;
 }
 
-/* POINT ACTIF */
 .dot.active {
-    background: #104911;
-    transform: scale(1.2);
+    background: white;
+
+    transform: scale(1.3);
 }
 
 /* ANIMATION */
@@ -478,21 +687,32 @@ input {
 }
 
 .icon {
-  width: 100px;
-  height: auto;
+    width: 110px;
 
-  margin-bottom: 16px;
+    margin-bottom: 20px;
+
+    filter:
+      drop-shadow(0 6px 12px rgba(0,0,0,0.2));
 }
 
 .slide h3 {
-    margin: 8px 0 16px;
-    text-align: center;
+    margin: 10px 0 18px;
+
+    font-size: 22px;
+
+    line-height: 1.2;
 }
 
 .slide p {
     margin: 0;
-    line-height: 1.5;
-    text-align: center;
+
+    line-height: 1.7;
+
+    font-size: 16px;
+
+    opacity: 0.95;
+
+    max-width: 520px;
 }
 
 /* COMPTEUR READY */
@@ -501,4 +721,100 @@ input {
     font-weight: bold;
     margin: 20px 0; 
     color: #F9A620;
+}
+
+/* REFAIRE l'INDEX */
+.lobby-container {
+    width: 90%;
+    max-width: 700px;
+
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.card {
+    background: rgba(255,255,255,0.08);
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+
+    backdrop-filter: blur(6px);
+}
+
+.join-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.join-row input {
+    flex: 1;
+}
+
+.settings-card {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+#startBtn {
+    margin-top: 10px;
+    width: 100%;
+    font-size: 18px;
+    padding: 15px;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+}
+.modal-content h2,
+.modal-content h3 {
+    margin:
+      0
+      0
+      12px;
+}
+.modal-content p {
+    margin:
+      0
+      0
+      14px;
+
+    line-height: 1.5;
+}
+.modal-content input {
+    margin-top: 10px;
+}
+.modal-content button {
+    margin-top: 18px;
+}
+
+.carousel-card {
+    position: relative;
+
+    width: calc(100% - 32px);
+
+    max-width: 700px;
+
+    margin: 0 auto 28px;
+
+    border-radius: 28px;
+
+    background: rgba(255,255,255,0.12);
+
+    backdrop-filter: blur(10px);
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+
+    overflow: hidden;
+
+    height: 480px;
 }

@@ -1,0 +1,63 @@
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css.css"> 
+</head>
+
+<body> 
+    <h1>QUIZ TIME</h1>
+    <h2>Last question</h2>
+    <form class="quiz-form">
+
+        <h3>Who is the best LOL champion ?</h3>
+
+        <div class="quiz-grid">
+
+            <input type="checkbox" id="option1" name="choix">
+            <label for="option1" class="quiz-card">
+                Seraphine
+            </label>
+
+            <input type="checkbox" id="option2" name="choix">
+            <label for="option2" class="quiz-card">
+                Gragas
+            </label>
+
+            <input type="checkbox" id="option3" name="choix">
+            <label for="option3" class="quiz-card">
+                Lux
+            </label>
+
+            <input type="checkbox" id="option4" name="choix">
+            <label for="option4" class="quiz-card">
+                Caca Boudin Yasuo
+            </label>
+
+        </div>
+
+        <br>
+
+        <input type="submit" value="Valider">
+
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+    const form = document.querySelector(".quiz-form");
+
+    if (form) {
+
+    form.addEventListener("submit", (e) => {
+
+        e.preventDefault();
+
+        console.log("submit quiz déclenché");
+
+        socket.emit("quizFinished");
+
+    });
+
+    }
+    </script>
+</body>
+

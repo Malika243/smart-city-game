@@ -239,12 +239,12 @@ function restaurerCompteRebours() {
 
       effacerStockage();
 
-      compteurSpan.innerText = "Temps écoulé !";
+      compteurSpan.innerText = "Time is up";
 
   } else {
 
       compteurSpan.innerText =
-        "Aucun compte à rebours actif";
+        "no active timer";
   }
 }
 
@@ -256,7 +256,7 @@ if (startBtn && minutesInput) {
   startBtn.addEventListener('click', () => {
     const minutes = parseInt(minutesInput.value, 10);
     if (isNaN(minutes) || minutes <= 0) {
-      alert("Entrez un nombre de minutes valide");
+      alert("please enter a valide minute number");
       return;
     }
     nouveauCompteRebours(minutes);
@@ -369,14 +369,14 @@ function ouvrirPopupPret() {
 
         <div class="modal-content">
 
-            <h2>Temps écoulé !</h2>
+            <h2>Time is up!</h2>
 
             <p style="font-weight: normal;">
-                Tout le monde doit être prêt avant de commencer le quiz.
+                Please be ready for the quiz.
             </p>
 
             <button id="readyBtn">
-                Prêt
+                READY
             </button>
 
         </div>
@@ -408,9 +408,9 @@ socket.on("showEndGamePopup", () => {
 
   modal.innerHTML = `
     <div class="modal-content">
-      <h2>Fin du jeu</h2>
+      <h2>END OF GAME</h2>
       <p id="countdownText">
-        Redirection dans 10 secondes...
+        You will be redirected in 5 seconds...
       </p>
     </div>
   `;
@@ -424,7 +424,7 @@ socket.on("showEndGamePopup", () => {
     countdown--;
 
     document.getElementById("countdownText").textContent =
-      `Redirection dans ${countdown} secondes...`;
+      `You will be redirected in ${countdown} seconds...`;
 
     if (countdown <= 0) {
 
