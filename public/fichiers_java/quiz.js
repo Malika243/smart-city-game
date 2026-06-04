@@ -1,22 +1,22 @@
 // ---------- BASE DE DONNÉES DU QUIZ ----------
 const questions = [
     {
-        text: "Quel pourcentage des passagers ont subits des retards de plus de 30 minutes ?",
+        text: "What percentage of passengers experienced delays of more than 30 minutes?",
         options: ["11%", "17%", "21%", "27%"],
         correct: [2],
-        maxChoices: 1
+        maxChoices: 4
     },
     {
-        text: "Quelles solutions peuvent permettre de faire face aux problèmes actuels dans les hôpitaux ?",
-        options: ["améliorer les conditions de travail et les salaires pour les médecins urgentistes afin de rendre attractif ", "rendre tous les hopitaux privés pour qu'ils soient gérés par des entreprises", "développer les téléconsultations ", "arrêter la prévention car cela représent un trop gros budget"],
+        text: "What standards should a shop meet ?",
+        options: ["work with local producers exclusively", "be close to housings", "be huge in order to better manage large numbers of people", "prioritise seasonal and local products"],
         correct: [0, 2],
-        maxChoices: 2
+        maxChoices: 4
     },
     {
-        text: "Quel pourcentage des étudiants font des études qui ne leur conviennent pas ?",
-        options: ["12%", "80%", "50%", "33%"],
+        text: "Which company is using the heat produced by it's AI to heat homes in switzerland ?",
+        options: ["Riot company", "Microsoft", "Google", "Infomaniak"],
         correct: [3],
-        maxChoices: 1
+        maxChoices: 4
     }/*,
     {
         text: "Question 4 ?",
