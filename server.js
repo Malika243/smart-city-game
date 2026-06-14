@@ -9,9 +9,7 @@ app.use(express.static("public"));
 
 let players = [];
 
-//ajout 
-let activeBuildings = {}; // stocke les iD des bâtiments en cours d'exploration ({2 : true})
-// fin ajout 
+let activeBuildings = {}; // stocke les ID des bâtiments en cours d'exploration ({2 : true})
 
 let buildings = [
   { id: 1, name: "Bus and railway stations", unlocked: false, enigme: "Which vehicule does the following sound like ?",
@@ -84,8 +82,8 @@ function calculateFinalScore() {
       isCorrect: isCorrect,
       explanation: quizQuestions[i].explanation
     });
-  }
-  
+  } 
+
   return { score, total: quizQuestions.length, results };
 }
 
@@ -104,7 +102,7 @@ function nextQuestion() {
       results: finalResults.results
     });
     
-    // Réinitialiser après 10 secondes (pour laisser le temps de lire)
+    // Réinitialiser après 15 secondes (pour laisser le temps de lire)
     setTimeout(() => {
       quizState = {
         isActive: false,
@@ -155,10 +153,8 @@ function nextQuestion() {
 // Sauvegarde automatique si le temps est écoulé
 function autoSaveAnswer() {
   if (quizState.teamAnswers.length > 0 || quizState.allAnswers[quizState.currentQuestionIndex]) {
-    // Déjà une réponse
     saveCurrentAnswerAndContinue();
   } else {
-    // Pas de réponse, on sauvegarde une réponse vide
     console.log("Aucune réponse sélectionnée, sauvegarde d'une réponse vide");
     quizState.allAnswers[quizState.currentQuestionIndex] = [];
     saveCurrentAnswerAndContinue();
@@ -166,12 +162,10 @@ function autoSaveAnswer() {
 }
 
 function saveCurrentAnswerAndContinue() {
-  // Sauvegarder la réponse actuelle si ce n'est pas déjà fait
   if (!quizState.allAnswers[quizState.currentQuestionIndex]) {
     quizState.allAnswers[quizState.currentQuestionIndex] = [...quizState.teamAnswers];
   }
   
-  // Passer à la question suivante après un court délai
   setTimeout(() => {
     if (quizState.isActive) {
       nextQuestion();
@@ -179,7 +173,32 @@ function saveCurrentAnswerAndContinue() {
   }, 1000);
 }
 
+// ==================== GESTION DU SOCKET (CORRIGÉ) ====================
 io.on("connection", (socket) => {
+
+  // Quand la page d'un joueur se charge ou se recharge
+  socket.on("demanderEtatBatiment", () => {
+    io.emit('batimentActuel', activeBuildings);
+  });
+
+  // INSTANTANÉ : Dès qu'un joueur clique et entre dans une énigme
+  socket.on("playerEntersEnigme", (buildingId) => {
+    const currentBuilding = buildings.find(b => b.id === buildingId);
+    
+    // Si l'énigme est déjà réussie, on s'arrête là pour laisser la LED fixe
+    if (currentBuilding && currentBuilding.unlocked) {
+      return;
+    }
+
+    console.log(`Le joueur commence l'énigme : ${buildingId}`);
+    
+    // On passe direct l'état à true pour la page /esp-status
+    activeBuildings[buildingId] = true; 
+    
+    // On met à jour l'affichage de tous les navigateurs
+    io.emit('batimentActuel', activeBuildings);
+  });
+
   socket.emit("updatePlayers", players);
   console.log("Joueur connecté");
 
@@ -204,6 +223,7 @@ io.on("connection", (socket) => {
         ...b,
         unlocked: false
       }));
+      activeBuildings = {};
       
       quizState = {
         isActive: false,
@@ -216,28 +236,27 @@ io.on("connection", (socket) => {
       };
     }
   });
+
   socket.on("buildingOpened", (id) => {
     console.log("🏢 BATIMENT OUVERT :", id);
-    //ajout 
-    activeBuildings[id] = true; // Ce bâtiment précis passe en mode "exploration"
-    io.emit("updateBuildings", buildings); // Optionnel : si tu as besoin de notifier les autres
+    activeBuildings[id] = true; 
+    io.emit("updateBuildings", buildings); 
   });
 
   socket.on("buildingClosed", (id) => {
     console.log("❌ BATIMENT FERME :", id);
-    delete activeBuildings[id]; // On retire ce bâtiment des explorations en cours
+    delete activeBuildings[id]; 
   });
 
   socket.on("unlockBuilding", (id) => {
     const b = buildings.find(b => b.id === id);
     if (b) {
       b.unlocked = true;
-      delete activeBuildings[id]; // Il est réussi, il n'est plus en cours d'exploration
+      delete activeBuildings[id]; // Plus en exploration car validé !
       io.emit("updateBuildings", buildings);
     }
   });
 
-    // fin ajout
   socket.on("startGame", () => {
     if (gameStarted) return;
     if (players.length < 1) return;
@@ -262,7 +281,6 @@ io.on("connection", (socket) => {
     quizState.timerTimeout = null;
     
     const firstQuestion = quizQuestions[0];
-    console.log("📤 Envoi de la première question");
     io.emit("nextQuestion", {
       index: 0,
       question: firstQuestion,
@@ -271,50 +289,39 @@ io.on("connection", (socket) => {
       teamAnswers: []
     });
     
-    // Timer pour la première question
     quizState.timerTimeout = setTimeout(() => {
-      console.log("⏰ Timer première question écoulé");
       if (quizState.isActive) {
         autoSaveAnswer();
       }
     }, 30000);
   });
   
-  // Quand un joueur change une réponse
   socket.on("updateTeamAnswer", (data) => {
     if (!quizState.isActive) return;
     
     const { answers } = data;
     quizState.teamAnswers = answers;
     
-    // Diffuser la mise à jour à tous les joueurs
     io.emit("teamAnswersUpdated", {
       teamAnswers: quizState.teamAnswers,
       questionIndex: quizState.currentQuestionIndex
     });
   });
   
-  // Quand un joueur valide la réponse pour l'équipe
   socket.on("validateTeamAnswer", () => {
     if (!quizState.isActive) return;
     
-    console.log(`✅ Validation de la réponse pour la question ${quizState.currentQuestionIndex + 1}`);
-    
-    // Sauvegarder la réponse de l'équipe
     quizState.allAnswers[quizState.currentQuestionIndex] = [...quizState.teamAnswers];
     
-    // Annuler le timer
     if (quizState.timerTimeout) {
       clearTimeout(quizState.timerTimeout);
     }
     
-    // Informer tout le monde que la réponse a été validée
     io.emit("answerValidated", {
       questionIndex: quizState.currentQuestionIndex,
       nextQuestionNumber: quizState.currentQuestionIndex + 2
     });
     
-    // Passer à la question suivante après 1.5 secondes
     setTimeout(() => {
       if (quizState.isActive) {
         nextQuestion();
@@ -326,10 +333,7 @@ io.on("connection", (socket) => {
     console.log("🔥 reset game");
     gameStarted = false;
     players = [];
-
-    // ajout 
-    activeBuildings ={};
-    // fin ajout 
+    activeBuildings = {};
 
     buildings = buildings.map(b => ({
       ...b,
@@ -351,27 +355,24 @@ io.on("connection", (socket) => {
   });
 });
 
-// --- AJOUTE CETTE ROUTE ICI (Complètement en bas) ---
+// ---------- URL DE STATUT POUR L'ESP32 ----------
 app.get("/esp-status", (req, res) => {
   let statusList = {};
 
   buildings.forEach(b => {
     if (b.unlocked) {
-      statusList[b.id] = 2; // Énigme réussie -> LED Fixe
+      statusList[b.id] = 2; // Réussie -> LED Fixe
     } else if (activeBuildings[b.id]) {
-      statusList[b.id] = 1; // Énigme ouverte par au moins un joueur -> LED Clignote
+      statusList[b.id] = 1; // Ouverte / En cours -> LED Clignote
     } else {
-      statusList[b.id] = 0; // Rien ne se passe -> LED Éteinte
+      statusList[b.id] = 0; // Pas commencée -> LED Éteinte
     }
   });
 
   res.json(statusList);
 });
 
-// ----------------------------------------------------
-
 const PORT = process.env.PORT || 3000;
-
 http.listen(PORT, () => {
   console.log("Serveur lancé sur http://localhost:3000");
 });

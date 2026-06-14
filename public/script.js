@@ -99,34 +99,53 @@ function openEnigme(building) {
 }
 
 function render(buildings) {
-  const grid = document.getElementById("grid");
-    if (!grid) return;  //évite les erreurs si on est pas sur la page d'accueil
-  grid.innerHTML = "";
+    const grid = document.getElementById("grid");
+    if (!grid) return; // évite les erreurs si on n'est pas sur la page d'accueil
+    grid.innerHTML = "";
 
-  buildings.forEach(b => {
-    const div = document.createElement("div");
-    div.classList.add("building");
+    buildings.forEach(b => {
+        const div = document.createElement("div");
+        div.classList.add("building");
 
-    if (b.unlocked) {
-      div.classList.add("unlocked");
-      div.textContent = b.name + " 🔓";
-    } else {
-      div.classList.add("locked");
-      div.textContent = b.name + " 🔒";
-    }
+        // CRÉATION DE LA LED EN SOUVENIR DE L'ÉNIGME
+        // On lui met l'attribut data-enigme avec l'ID du bâtiment
+        const led = document.createElement("span");
+        led.classList.add("led");
+        led.setAttribute("data-enigme", b.id);
+        div.appendChild(led);
 
-    div.onclick = () => {
-      if (!b.unlocked) {
-        openEnigme(b); 
-      }
-      else {
-        window.location.href=`${b.name}.html`;   // du coup faut que la page est le meme nom que le bâtiment pour que ca marche
-      }
-    };
+        // On ajoute le texte du bâtiment
+        const textSpan = document.createElement("span");
+        if (b.unlocked) {
+            div.classList.add("unlocked");
+            textSpan.textContent = b.name + " 🔓";
+        } else {
+            div.classList.add("locked");
+            textSpan.textContent = b.name + " 🔒";
+        }
+        div.appendChild(textSpan);
 
-    grid.appendChild(div);
-  });
+        div.onclick = () => {
+            if (b.unlocked) {
+              // si l'enigme est déjà résolue, on l'ouvre normalement
+              // le serveur ne fera pas clignoter la LED car unlocked = true
+              openEnigme(b);
+            } else {
+              // ainstantané : On bombarde l'info au serveur que le jouer entre dans l'énigme 
+              socket.emit("playerEntersEnigme",b.id);
+              // // et on change de page direct 
+              window.location.href = `${b.name}.html`;
+            }
+        };
+
+        grid.appendChild(div);
+    });
+
+    // Dès qu'on a fini de dessiner les bâtiments, on demande au serveur 
+    // d'envoyer l'état actuel pour colorer les leds immédiatement
+    socket.emit("demanderEtatBatiment"); 
 }
+
 
 socket.on("updatePlayers", (players) => {
   currentPlayers = players;
@@ -426,6 +445,8 @@ socket.on("gameReset", () => {
 
 socket.on("showEndGamePopup", () => {
   console.log("🔥 popup reçu");
+  // éteindre leds
+  activeBuildings = {};
 
   if (document.querySelector(".end-modal")) return;
 
@@ -464,4 +485,29 @@ socket.on("showEndGamePopup", () => {
     }
 
   }, 1000);
+});
+// On écoute le serveur quand la page se charge ou se recharge
+socket.on('batimentActuel', (idActuel) => {
+    
+    // On va chercher toutes les LED dans ton HTML
+    const toutesLesLeds = document.querySelectorAll('.led');
+    
+    toutesLesLeds.forEach(led => {
+        // On lit le numéro (data-enigme="X") de la LED
+        const numEnigme = parseInt(led.getAttribute('data-enigme'));
+        
+        // On nettoie les anciens états pour pas que ça s'emmêle
+        led.classList.remove('en-cours', 'reussie');
+        
+        // LA LOGIQUE :
+        if (numEnigme < idActuel) {
+            // Si le numéro est plus petit que celui en cours, c'est que c'est réussi ! -> Vert fixe
+            led.classList.add('reussie'); 
+        } 
+        else if (numEnigme === idActuel) {
+            // Si c'est pile le numéro en cours -> Ça clignote !
+            led.classList.add('en-cours');
+        }
+        // Sinon, si c'est supérieur, ça reste gris (éteint)
+    });
 });

@@ -818,3 +818,38 @@ header h2 {
 
     height: 480px;
 }
+/* L'état de base de la LED sur l'élément (Éteinte / Grise) */
+.building {
+    position: relative; /* Pour pouvoir positionner la LED par rapport au bâtiment si besoin */
+}
+
+/* On crée la LED en CSS */
+.led {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #555; /* Gris par défaut */
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+/* État : En cours -> Clignote Orange */
+.led.en-cours {
+    background-color: #ff9900;
+    animation: clignoterLed 0.8s infinite alternate;
+}
+
+/* État : Réussie -> Vert fixe */
+.led.reussie {
+    background-color: #00ff00;
+    box-shadow: 0 0 10px #00ff00;
+    animation: none;
+}
+
+@keyframes clignoterLed {
+    from { opacity: 0.3; box-shadow: none; }
+    to { opacity: 1; box-shadow: 0 0 8px #ff9900; }
+}
+
