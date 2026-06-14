@@ -24,10 +24,12 @@ function startGame() {
 }
 
 function openEnigme(building) {
-
   const modal = document.createElement("div");
   modal.classList.add("modal");
 
+  // Vérifie si l'énigme a un fichier audio
+  const hasAudio = building.audioFile && building.audioFile !== "";
+  
   modal.innerHTML = `
     <div class="modal-content">
       <button class="close-modal">
@@ -37,7 +39,16 @@ function openEnigme(building) {
 
       <p style="font-weight: normal;">${building.enigme}</p>
 
-      <input type="text" id="answerInput">
+      ${hasAudio ? `
+        <div class="audio-player">
+          <audio id="enigmeAudio" controls>
+            <source src="assets/audio/${building.audioFile}" type="audio/mpeg">
+            Ton navigateur ne supporte pas l'élément audio.
+          </audio>
+        </div>
+      ` : ''}
+
+      <input type="text" id="answerInput" placeholder="Votre réponse...">
 
       <button id="validateBtn">Valider</button>
 
@@ -46,28 +57,43 @@ function openEnigme(building) {
   `;
 
   document.body.appendChild(modal);
+  
 
+  // Gestionnaire pour fermer le modal
   modal.querySelector(".close-modal").onclick = () => {
+      // Arrêter l'audio si elle est en cours de lecture
+      if (hasAudio) {
+        const audio = document.getElementById("enigmeAudio");
+        if (audio) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      }
+      
       modal.remove();
   };
 
+  // Gestionnaire de validation
   document.getElementById("validateBtn").onclick = () => {
-
-    const value =
-      document.getElementById("answerInput").value;
+    const value = document.getElementById("answerInput").value;
 
     if (value.toLowerCase() === building.answer.toLowerCase()) {
-
       socket.emit("unlockBuilding", building.id);
-
+      
+      // Arrêter l'audio avant de fermer
+      if (hasAudio) {
+        const audio = document.getElementById("enigmeAudio");
+        if (audio) audio.pause();
+      }
+      
       modal.remove();
-
-      window.location.href=`${building.name}.html`;
-
+      window.location.href = `${building.name}.html`;
     } else {
-
       document.getElementById("result").textContent = "Mauvaise réponse";
-
+      // Animation d'erreur
+      const input = document.getElementById("answerInput");
+      input.classList.add("shake");
+      setTimeout(() => input.classList.remove("shake"), 500);
     }
   };
 }
