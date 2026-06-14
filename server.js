@@ -177,26 +177,28 @@ function saveCurrentAnswerAndContinue() {
 io.on("connection", (socket) => {
 
   // Quand la page d'un joueur se charge ou se recharge
+  // Quand un joueur rafraîchit la page, on lui renvoie l'ID en cours (ou null)
   socket.on("demanderEtatBatiment", () => {
-    io.emit('batimentActuel', activeBuildings);
+    // On trouve le premier ID de bâtiment actuellement en cours d'exploration
+    const currentId = Object.keys(activeBuildings)[0] || null;
+    socket.emit('batimentActuel', currentId ? parseInt(currentId) : null);
   });
 
-  // INSTANTANÉ : Dès qu'un joueur clique et entre dans une énigme
+  // Dès qu'un joueur clique et entre dans une énigme
   socket.on("playerEntersEnigme", (buildingId) => {
+    if (!gameStarted) return;
+
     const currentBuilding = buildings.find(b => b.id === buildingId);
-    
-    // Si l'énigme est déjà réussie, on s'arrête là pour laisser la LED fixe
-    if (currentBuilding && currentBuilding.unlocked) {
-      return;
-    }
+    if (currentBuilding && currentBuilding.unlocked) return;
 
     console.log(`Le joueur commence l'énigme : ${buildingId}`);
     
-    // On passe direct l'état à true pour la page /esp-status
+    // On vide les anciens et on met le nouveau bâtiment actif
+    activeBuildings = {}; 
     activeBuildings[buildingId] = true; 
     
-    // On met à jour l'affichage de tous les navigateurs
-    io.emit('batimentActuel', activeBuildings);
+    // On envoie le CHIFFRE pile comme ton script.js l'attend !
+    io.emit('batimentActuel', buildingId);
   });
 
   socket.emit("updatePlayers", players);

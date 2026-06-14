@@ -445,8 +445,6 @@ socket.on("gameReset", () => {
 
 socket.on("showEndGamePopup", () => {
   console.log("🔥 popup reçu");
-  // éteindre leds
-  activeBuildings = {};
 
   if (document.querySelector(".end-modal")) return;
 
@@ -458,7 +456,7 @@ socket.on("showEndGamePopup", () => {
       <h2>END OF GAME</h2>
       <p id="countdownText">
         You will be redirected in 5 seconds...
-      </p>
+      </p >
     </div>
   `;
 
@@ -467,25 +465,22 @@ socket.on("showEndGamePopup", () => {
   let countdown = 5;
 
   const interval = setInterval(() => {
-
     countdown--;
 
     document.getElementById("countdownText").textContent =
       `You will be redirected in ${countdown} seconds...`;
 
     if (countdown <= 0) {
-
       clearInterval(interval);
 
-      // reset serveur
+      // C'est cette ligne qui va dire au serveur de tout éteindre !
       socket.emit("endGame");
 
-      // redirect
       window.location.href = "index.html";
     }
-
   }, 1000);
 });
+
 // On écoute le serveur quand la page se charge ou se recharge
 socket.on('batimentActuel', (idActuel) => {
     
